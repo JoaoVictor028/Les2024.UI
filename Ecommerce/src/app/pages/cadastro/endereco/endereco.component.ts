@@ -59,7 +59,7 @@ export class EnderecoComponent implements OnInit {
   }
 
   prevPage() {
-    this.router.navigate(['/formulario/endereco']);
+    this.router.navigate(['/formulario/informacoes']);
   }
 
   carregarEstados() {
@@ -77,7 +77,8 @@ export class EnderecoComponent implements OnInit {
       this.enderecoInformation.logradouro &&
       this.enderecoInformation.bairro &&
       this.enderecoInformation.cidade &&
-      this.enderecoInformation.estado
+      this.enderecoInformation.estado &&
+      this.enderecoInformation.numero
     );
   }
 
@@ -85,6 +86,7 @@ export class EnderecoComponent implements OnInit {
     if (event.value) {
       this.carregarCidadesPorEstado(event.value.sigla);
       this.enderecoInformation.estado = event.value.nome;
+      this.enderecoInformation.sigla = event.value.sigla
     }
   }
 

@@ -1,1 +1,50 @@
-<p>confirmacao works!</p>
+<div class="stepsdemo-content">
+    <p-card>
+        <ng-template pTemplate="title"> Confirmação </ng-template>
+        <ng-template pTemplate="subtitle"> confirme os dados </ng-template>
+        <ng-template pTemplate="content">
+            <div class="field col-12">
+                <label for="firstName">Primeiro Nome</label>
+                <b>{{ clienteInformation.personalInformation.primeiroNome ? clienteInformation.personalInformation.primeiroNome : '-' }}</b>
+            </div>
+            <div class="field col-12">
+                <label for="lastName">Sobrenome</label>
+                <b>{{ clienteInformation.personalInformation.sobrenome ? clienteInformation.personalInformation.sobrenome : '-' }}</b>
+            </div>
+            <div class="field col-12">
+                <label for="email">Email</label>
+                <b>{{ clienteInformation.personalInformation.email ? clienteInformation.personalInformation.email : '-' }}</b>
+            </div>
+            <div class="field col-12">
+                <label for="phoneNumber">Numero de Celular </label>
+                <b>{{ clienteInformation.personalInformation.numeroTelefone ? clienteInformation.personalInformation.numeroTelefone : '-' }}</b>
+            </div>
+            <div class="field col-12">
+                <label for="cep">CEP</label>
+                <b>{{ clienteInformation.enderecoInformation.cep ? clienteInformation.enderecoInformation.cep : '-' }}</b>
+            </div>
+            <div class="field col-12">
+                <label for="logradouro">Logradouro </label>
+                <b>{{ clienteInformation.enderecoInformation.logradouro ? clienteInformation.enderecoInformation.logradouro : '-' }}</b>
+            </div>
+            <div class="field col-12">
+                <label for="bairro">Bairro </label>
+                <b>{{ clienteInformation.enderecoInformation.bairro ? clienteInformation.enderecoInformation.bairro : '-' }}</b>
+            </div>
+            <div class="field col-12">
+                <label for="cidade">Cidade </label>
+                <b>{{ clienteInformation.enderecoInformation.cidade ? clienteInformation.enderecoInformation.cidade : '-' }}</b>
+            </div>
+            <div class="field col-12">
+                <label for="estado">Estado </label>
+                <b>{{ clienteInformation.enderecoInformation.estado ? clienteInformation.enderecoInformation.estado : '-' }}</b>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="grid grid-nogutter justify-content-between">
+                <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
+                <p-button label="Complete" (onClick)="complete()" icon="pi pi-angle-right" iconPos="right" styleClass="p-button-success"></p-button>
+            </div>
+        </ng-template>
+    </p-card>
+</div>

@@ -38,6 +38,22 @@
                     </small>
                 </div>
                 <div class="field col-12 md:col-4">
+                    <label for="numero">numero</label>
+                    <input
+                        #numero="ngModel"
+                        id="numero"
+                        type="text"
+                        required
+                        pInputText
+                        [(ngModel)]="enderecoInformation.numero"
+                        [ngClass]="{ 'ng-dirty': (numero.invalid && submitted) || (numero.dirty && numero.invalid) }"
+                    />
+                    <small 
+                        *ngIf="(numero.invalid && submitted) || (numero.dirty && numero.invalid)" 
+                        class="p-error">numero é necessário.
+                    </small>
+                </div>
+                <div class="field col-12 md:col-4">
                     <label for="bairro">Bairro</label>
                     <input
                         #bairro="ngModel"
@@ -53,16 +69,7 @@
                         class="p-error">Bairro é necessário.
                     </small>
                 </div>
-                <div class="field col-12 md:col-6">
-                    <label for="cidade">Cidade</label>
-                    <p-dropdown inputId="cidade" 
-                        [options]="cidades" 
-                        [(ngModel)]="enderecoInformation.cidade"
-                        (onChange)="onCidadeChange($event)" 
-                        optionLabel="nome" 
-                        placeholder="Selecione a cidade"></p-dropdown>
-                </div>
-                <div class="field col-12 md:col-6">
+                <div class="field col-12 md:col-4">
                     <label for="estado">Estado</label>
                     <p-dropdown inputId="estado" 
                         [options]="estados" 
@@ -70,6 +77,15 @@
                         (onChange)="onEstadoChange($event)" 
                         optionLabel="sigla" 
                         placeholder="Selecione o Estado"></p-dropdown>
+                </div>
+                <div class="field col-12 md:col-4">
+                    <label for="cidade">Cidade</label>
+                    <p-dropdown inputId="cidade" 
+                        [options]="cidades" 
+                        [(ngModel)]="enderecoInformation.cidade"
+                        (onChange)="onCidadeChange($event)" 
+                        optionLabel="nome" 
+                        placeholder="Selecione a cidade"></p-dropdown>
                 </div>
             </div>
         </ng-template>
