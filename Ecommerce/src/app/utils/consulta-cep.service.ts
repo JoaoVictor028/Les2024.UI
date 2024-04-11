@@ -6,11 +6,11 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ConsultaCepService {
 
-  url_API = 'https://viacep.com.br/ws/';
+  url_API_CEP = 'https://viacep.com.br/ws/';
 
   constructor(private http: HttpClient) { }
 
   getConsultaCep(cep: string){
-    return this.http.get(`${this.url_API}${cep}/json`)
+    return this.http.get(`${this.url_API_CEP}${cep}/json`)
   }
 }

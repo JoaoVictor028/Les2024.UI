@@ -1,98 +1,145 @@
 <div class="stepsdemo-content">
     <p-card>
-        <ng-template pTemplate="title"> Endereço </ng-template>
-        <ng-template pTemplate="subtitle"> Insira seu endereço de entrega </ng-template>
+        <ng-template pTemplate="title">Endereço</ng-template>
+        <ng-template pTemplate="subtitle">Insira seu endereço de entrega</ng-template>
         <ng-template pTemplate="content">
-            <div class="p-fluid formgrid grid">
-                <div class="field col-12 md:col-4">
-                    <label for="cep">CEP</label>
-                    <input
-                        #cep="ngModel"
-                        id="cep"
-                        type="text"
-                        required
-                        pInputText
-                        [(ngModel)]="enderecoInformation.cep"
-                        (ngModelChange)="buscarCep()"
-                        [ngClass]="{ 'ng-dirty': (cep.invalid && submitted) || (cep.dirty && cep.invalid) }"
-                    />
-                    <small 
-                        *ngIf="(cep.invalid && submitted) || (cep.dirty && cep.invalid)" 
-                        class="p-error">CEP é necessário.
-                    </small>
+            <form #enderecoForm="ngForm">
+                <div class="p-fluid formgrid grid">
+                    <div class="field col-12 md:col-3">
+                        <label for="cep">CEP</label>
+                        <input
+                            (blur)="consultaCEP($event)"
+                            name="cep" 
+                            id="cep"
+                            pInputText
+                            ngModel
+                            required
+                            #cep="ngModel"
+                        />
+                        <small *ngIf="(cep?.invalid && submitted) || (cep?.dirty && cep?.invalid)" 
+                            class="p-error">CEP nome é necessário.
+                        </small>
+
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <label for="logradouro">logradouro</label>
+                        <input 
+                            name="logradouro" 
+                            id="logradouro"
+                            pInputText
+                            ngModel
+                            required
+                            #logradouro="ngModel"
+                        />
+                        <small *ngIf="(logradouro?.invalid && submitted) || (logradouro?.dirty && logradouro?.invalid)" 
+                            class="p-error">logradouro é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-3">
+                        <label for="tipoResidencia">tipo de Residencia</label>
+                        <p-dropdown
+                            [options]="tiposResidencia"
+                            optionLabel="tipo"
+                            name="tipoResidencia" 
+                            id="tipoResidencia"
+                            ngModel 
+                            minlength="2"
+                            #tipoResidencia="ngModel"
+                        />
+                        <small *ngIf="(tipoResidencia?.invalid && submitted) || (tipoResidencia?.dirty && tipoResidencia?.invalid)" 
+                            class="p-error">tipo é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <label for="numeroResidencia">n° Residencia</label>
+                        <input 
+                            name="numeroResidencia" 
+                            id="numeroResidencia"
+                            pInputText
+                            ngModel
+                            required
+                            #numeroResidencia="ngModel"
+                        />
+                        <small *ngIf="(numeroResidencia?.invalid && submitted) || (numeroResidencia?.dirty && numeroResidencia?.invalid)" 
+                            class="p-error">numeroResidencia é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label for="bairro">bairro</label>
+                        <input 
+                            name="bairro" 
+                            id="bairro"
+                            pInputText
+                            ngModel
+                            required
+                            #bairro="ngModel"
+                        />
+                        <small *ngIf="(bairro?.invalid && submitted) ||( bairro?.dirty && bairro?.invalid)" 
+                            class="p-error">bairro é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <label for="cidade">Cidade</label>
+                        <input 
+                            name="cidade" 
+                            id="cidade"
+                            pInputText
+                            ngModel
+                            required
+                            #cidade="ngModel"
+                        />
+                        <small *ngIf="(cidade?.invalid && submitted) || (cidade?.dirty && cidade?.invalid)" 
+                            class="p-error">cidade é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-3">
+                        <label for="estado">Estado</label>
+                        <p-dropdown
+                            [options]="estados"
+                            optionLabel="nome"
+                            optionValue="uf"
+                            name="estado" 
+                            id="estado"
+                            ngModel 
+                            minlength="2"
+                            #estado="ngModel"
+                        />
+                        <small *ngIf="(estado?.invalid && submitted) || (estado?.dirty && estado?.invalid)" 
+                            class="p-error">tipo é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-3">
+                        <label for="pais">País</label>
+                        <p-dropdown
+                            [options]="paises"
+                            [showClear]="true"
+                            optionLabel="pais"
+                            name="pais" 
+                            id="pais"
+                            ngModel 
+                            minlength="2"
+                            #pais="ngModel"
+                        >
+                        
+                            <ng-template let-pais pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <img [src]="pais.img"  style="width: 18px"/>
+                                    <div>{{ pais.pais }}</div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                        <small *ngIf="(pais?.invalid && submitted) || (pais?.dirty && pais?.invalid)" 
+                            class="p-error">tipo é necessário.
+                        </small>
+                    </div>
+
                 </div>
-                <div class="field col-12 md:col-4">
-                    <label for="logradouro">Logradouro</label>
-                    <input
-                        #logradouro="ngModel"
-                        id="logradouro"
-                        type="text"
-                        required
-                        pInputText
-                        [(ngModel)]="enderecoInformation.logradouro"
-                        [ngClass]="{ 'ng-dirty': (logradouro.invalid && submitted) || (logradouro.dirty && logradouro.invalid) }"
-                    />
-                    <small 
-                        *ngIf="(logradouro.invalid && submitted) || (logradouro.dirty && logradouro.invalid)" 
-                        class="p-error">Logradouro é necessário.
-                    </small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <label for="numero">numero</label>
-                    <input
-                        #numero="ngModel"
-                        id="numero"
-                        type="text"
-                        required
-                        pInputText
-                        [(ngModel)]="enderecoInformation.numero"
-                        [ngClass]="{ 'ng-dirty': (numero.invalid && submitted) || (numero.dirty && numero.invalid) }"
-                    />
-                    <small 
-                        *ngIf="(numero.invalid && submitted) || (numero.dirty && numero.invalid)" 
-                        class="p-error">numero é necessário.
-                    </small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <label for="bairro">Bairro</label>
-                    <input
-                        #bairro="ngModel"
-                        id="bairro"
-                        type="text"
-                        required
-                        pInputText
-                        [(ngModel)]="enderecoInformation.bairro"
-                        [ngClass]="{ 'ng-dirty': (bairro.invalid && submitted) || (bairro.dirty && bairro.invalid) }"
-                    />
-                    <small 
-                        *ngIf="(bairro.invalid && submitted) || (bairro.dirty && bairro.invalid)" 
-                        class="p-error">Bairro é necessário.
-                    </small>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <label for="estado">Estado</label>
-                    <p-dropdown inputId="estado" 
-                        [options]="estados" 
-                        [(ngModel)]="enderecoInformation.estado" 
-                        (onChange)="onEstadoChange($event)" 
-                        optionLabel="sigla" 
-                        placeholder="Selecione o Estado"></p-dropdown>
-                </div>
-                <div class="field col-12 md:col-4">
-                    <label for="cidade">Cidade</label>
-                    <p-dropdown inputId="cidade" 
-                        [options]="cidades" 
-                        [(ngModel)]="enderecoInformation.cidade"
-                        (onChange)="onCidadeChange($event)" 
-                        optionLabel="nome" 
-                        placeholder="Selecione a cidade"></p-dropdown>
-                </div>
-            </div>
+            </form>
         </ng-template>
         <ng-template pTemplate="footer">
             <div class="grid grid-nogutter justify-content-between">
-                <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
-                <p-button label="Next" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+                <p-button label="Voltar" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
+                <p-button label="Avançar" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
             </div>
         </ng-template>
     </p-card>

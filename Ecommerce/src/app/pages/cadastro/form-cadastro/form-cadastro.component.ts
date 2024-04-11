@@ -32,9 +32,10 @@ export class FormCadastroComponent implements OnInit {
       }
     ];
 
-    this.subscription = this.cadastroService.paymentComplete$.subscribe((personalInformation) => {
+    this.subscription = this.cadastroService.paymentComplete$.subscribe((clienteInformation) => {
+      console.log(clienteInformation)
       this.cadastroService.post();
-      this.messageService.add({ severity: 'success', summary: 'Cadastro Concluido', detail: personalInformation.primeiroNome + ' ' + personalInformation.sobrenome });
+      this.messageService.add({ severity: 'success', summary: 'Cadastro Concluido', detail: clienteInformation.primeiroNome + ' ' + clienteInformation.sobrenome });
     });
   }
 

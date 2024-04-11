@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { CadastroService } from './../cadastro.service';
+import { CadastroService } from '../cadastro.service';
 import { ConsultaCepService } from 'src/app/utils/consulta-cep.service';
-import { PreencherCidadeEstadoService } from 'src/app/utils/preencher-cidade-estado.service';
+import { NgForm } from '@angular/forms';
+import { PreencherPaisService } from 'src/app/utils/preencher-pais.service';
 
 @Component({
   selector: 'app-endereco',
@@ -10,97 +12,101 @@ import { PreencherCidadeEstadoService } from 'src/app/utils/preencher-cidade-est
   styleUrls: ['./endereco.component.scss']
 })
 export class EnderecoComponent implements OnInit {
-
-  enderecoInformation: any = {};
+  @ViewChild('enderecoForm') enderecoForm!: NgForm;
   submitted: boolean = false;
-  estados: any[] = [];
-  cidades: any[] = [];
 
+  tiposResidencia: any[] = [
+    {tipo: 'casa'},
+    {tipo: 'apartamente'}
+  ]
+  estados: any[] = [
+    { uf: 'AC', nome: 'Acre' },
+    { uf: 'AL', nome: 'Alagoas' },
+    { uf: 'AM', nome: 'Amazonas' },
+    { uf: 'AP', nome: 'Amapá' },
+    { uf: 'BA', nome: 'Bahia' },
+    { uf: 'CE', nome: 'Ceará' },
+    { uf: 'DF', nome: 'Distrito Federal' },
+    { uf: 'ES', nome: 'Espírito Santo' },
+    { uf: 'GO', nome: 'Goiás' },
+    { uf: 'MA', nome: 'Maranhão' },
+    { uf: 'MG', nome: 'Minas Gerais' },
+    { uf: 'MS', nome: 'Mato Grosso do Sul' },
+    { uf: 'MT', nome: 'Mato Grosso' },
+    { uf: 'PA', nome: 'Pará' },
+    { uf: 'PB', nome: 'Paraíba' },
+    { uf: 'PE', nome: 'Pernambuco' },
+    { uf: 'PI', nome: 'Piauí' },
+    { uf: 'PR', nome: 'Paraná' },
+    { uf: 'RJ', nome: 'Rio de Janeiro' },
+    { uf: 'RN', nome: 'Rio Grande do Norte' },
+    { uf: 'RO', nome: 'Rondônia' },
+    { uf: 'RR', nome: 'Roraima' },
+    { uf: 'RS', nome: 'Rio Grande do Sul' },
+    { uf: 'SC', nome: 'Santa Catarina' },
+    { uf: 'SE', nome: 'Sergipe' },
+    { uf: 'SP', nome: 'São Paulo' },
+    { uf: 'TO', nome: 'Tocantins' }
+  ];
+
+  paises!: any []
 
   constructor(
     public cadastroService: CadastroService,
     private router: Router,
-    public consultaCepService: ConsultaCepService,
-    public preencherCidadeEstadoService: PreencherCidadeEstadoService
+    private consultaCepService: ConsultaCepService,
+    private preencherPaisService: PreencherPaisService
   ) {}
 
-  ngOnInit() {
-    this.enderecoInformation = this.cadastroService.getClienteInformation().enderecoInformation;
-    this.carregarEstados();
+  ngOnInit() { 
+    this.getPaises();
   }
 
-  buscarCep() {
-    if (this.enderecoInformation.cep && this.enderecoInformation.cep.length === 8) {
-      this.consultaCepService.getConsultaCep(this.enderecoInformation.cep)
-        .subscribe((data: any) => {
-          this.enderecoInformation.logradouro = data.logradouro;
-          this.enderecoInformation.bairro = data.bairro;
-          this.enderecoInformation.cidade = data.localidade;
-          this.enderecoInformation.estado = data.uf;
-        }, (error) => {
-          console.error('Erro ao consultar CEP:', error);
-        });
+  getPaises(){
+    this.preencherPaisService.getPaises().subscribe(resultado => {
+      this.paises = Object.values(resultado)
+    })
+  }
+
+  consultaCEP(ev: any) {
+    const cep = ev.target.value;
+    if (cep !== '') {
+      this.consultaCepService.getConsultaCep(cep).subscribe(resultado => {
+      this.preencherEndereco(resultado)});
     }
+    return
   }
 
-  setCidade(event: any) {
-    if (event.value) {
-      this.enderecoInformation.cidade = event.value.nome;
-    }
+  preencherEndereco(dados : any){
+    this.enderecoForm.form.patchValue({
+      logradouro: dados.logradouro,
+      bairro: dados.bairro,
+      cidade: dados.localidade,
+      estado: dados.uf
+    });
   }
 
+  getNomeEstado(sigla: string): string | undefined {
+    const estadoEncontrado = this.estados.find(estado => estado.uf === sigla);
+    return estadoEncontrado ? estadoEncontrado.nome : undefined;
+  }
+  
   nextPage() {
-    if (this.validarCamposEndereco()) {
-      this.cadastroService.clienteInformation.enderecoInformation = this.enderecoInformation;
-      this.router.navigate(['formulario/confirmacao']);
+    if (this.enderecoForm.valid) {
+      const enderecoData = this.enderecoForm.value;
+      const siglaEstado = enderecoData.estado;
+      const nomeEstado = this.getNomeEstado(siglaEstado); 
+      if (nomeEstado) {
+        enderecoData.estado = { uf: siglaEstado, nome: nomeEstado }; // Atribui tanto a sigla quanto o nome do estado ao campo 'estado'
+      }
+      console.log(enderecoData)
+      this.cadastroService.setEnderecoData(enderecoData); // Envie os dados para o serviço
+      this.router.navigate(['cadastro/confirmacao']);
     }
-    this.submitted = true
-
+    this.submitted = true;
   }
 
   prevPage() {
-    this.router.navigate(['/formulario/informacoes']);
+    this.router.navigate(['/cadastro/informacoes']);
   }
-
-  carregarEstados() {
-    this.preencherCidadeEstadoService.getEstados()
-      .subscribe((data: any[]) => {
-        this.estados = data;
-      }, (error) => {
-        console.error('Erro ao buscar estados:', error);
-      });
-  }
-
-  validarCamposEndereco(): boolean {
-    return !!(
-      this.enderecoInformation.cep &&
-      this.enderecoInformation.logradouro &&
-      this.enderecoInformation.bairro &&
-      this.enderecoInformation.cidade &&
-      this.enderecoInformation.estado &&
-      this.enderecoInformation.numero
-    );
-  }
-
-  onEstadoChange(event: any) {
-    if (event.value) {
-      this.carregarCidadesPorEstado(event.value.sigla);
-      this.enderecoInformation.estado = event.value.nome;
-      this.enderecoInformation.sigla = event.value.sigla
-    }
-  }
-
-  carregarCidadesPorEstado(estadoSigla: string) {
-    this.preencherCidadeEstadoService.getCidades(estadoSigla)
-      .subscribe((data: any[]) => {
-        this.cidades = data;
-      }, (error) => {
-        console.error('Erro ao buscar cidades:', error);
-      });
-  }
-
-  onCidadeChange(event: any) {
-    this.setCidade(event);
-    console.log('Cidade selecionada:', event.value);
-}
 }

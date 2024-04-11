@@ -1,6 +1,7 @@
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CadastroService } from './../cadastro.service';
-import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-confirmacao',
@@ -9,12 +10,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConfirmacaoComponent implements OnInit {
 
-  clienteInformation: any
+  clienteForm!: FormGroup;
 
   constructor(public cadastroService: CadastroService, private router: Router) { }
 
   ngOnInit() {
-    this.clienteInformation = this.cadastroService.clienteInformation;
+    this.clienteForm = this.cadastroService.getFormData();
   }
 
   complete() {
@@ -22,6 +23,6 @@ export class ConfirmacaoComponent implements OnInit {
   }
 
   prevPage() {
-    this.router.navigate(['formulario/endereco']);
+    this.router.navigate(['cadastro/endereco']);
   }
 }

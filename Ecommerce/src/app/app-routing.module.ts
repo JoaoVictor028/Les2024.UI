@@ -5,11 +5,11 @@ import { FormCadastroComponent } from './pages/cadastro/form-cadastro/form-cadas
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'home',
     component: HomeComponent
   },
   {
-    path: 'formulario',
+    path: 'cadastro',
     component: FormCadastroComponent,
     children: [
       { path: '', loadChildren: () => import('./pages/cadastro/cadastro-routing.module').then(m => m.CadastroRoutingModule) }

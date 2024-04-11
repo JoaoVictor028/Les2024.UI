@@ -10,6 +10,8 @@ import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import { PasswordModule } from 'primeng/password';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,6 +21,8 @@ import { InformacoesPessoaisComponent } from './pages/cadastro/informacoes-pesso
 import { EnderecoComponent } from './pages/cadastro/endereco/endereco.component';
 import { ConfirmacaoComponent } from './pages/cadastro/confirmacao/confirmacao.component';
 import { FormCadastroComponent } from './pages/cadastro/form-cadastro/form-cadastro.component';
+import { CartaoComponent } from './pages/cadastro/cartao/cartao.component';
+import { GerenciarClientesComponent } from './pages/gerenciar-clientes/gerenciar-clientes.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +31,9 @@ import { FormCadastroComponent } from './pages/cadastro/form-cadastro/form-cadas
     InformacoesPessoaisComponent,
     EnderecoComponent,
     ConfirmacaoComponent,
-    FormCadastroComponent
+    FormCadastroComponent,
+    CartaoComponent,
+    GerenciarClientesComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +48,9 @@ import { FormCadastroComponent } from './pages/cadastro/form-cadastro/form-cadas
     CardModule,
     ToastModule,
     InputTextModule,
-    DropdownModule
+    DropdownModule,
+    CalendarModule,
+    PasswordModule
   ],
   providers: [],
   bootstrap: [AppComponent]

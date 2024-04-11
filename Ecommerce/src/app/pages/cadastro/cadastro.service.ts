@@ -1,67 +1,95 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CadastroService {
-  clienteInformation = {
-    personalInformation: {
-      primeiroNome: '',
-      sobrenome: '',
-      email: '',
-      numeroTelefone: '',
-    },
-    enderecoInformation: {
-      cep: '',
-      logradouro: '',
-      bairro: '',
-      numero: null,
-      cidade: null,
-      estado: null,
-      sigla: null
-    },
-  };
+  formData: FormGroup; // Um único FormGroup para todos os dados
 
   private paymentComplete = new Subject<any>();
   paymentComplete$ = this.paymentComplete.asObservable();
 
-  getClienteInformation() {
-    return this.clienteInformation;
+  constructor(private http: HttpClient, private formBuilder: FormBuilder) {
+    // Criando um único FormGroup para todos os dados
+    this.formData = this.formBuilder.group({
+      cliente: this.formBuilder.group({
+        primeiroNome: ['', Validators.required],
+        sobrenome: ['', Validators.required],
+        genero: ['', Validators.required],
+        email: ['', Validators.required],
+        cpf: ['', Validators.required], 
+        dtNascimento: ['', Validators.required],
+        tipoTelefone: ['', Validators.required],
+        telefone: ['', Validators.required],
+        senha: ['', Validators.required]
+      }),
+      endereco: this.formBuilder.group({
+        tipoResidencia: ['', Validators.required],
+        cep: ['', Validators.required],
+        logradouro: ['', Validators.required],
+        bairro: ['', Validators.required],
+        numeroResidencia: ['', Validators.required],
+        cidade: ['', Validators.required],
+        estado: ['', Validators.required],
+        pais: ['', Validators.required],
+      })
+    });
+  }
+
+  getFormData() {
+    return this.formData;
+  }
+
+  setClienteData(data: any) {
+    this.formData.get('cliente')?.patchValue(data);
+  }
+
+  setEnderecoData(data: any) {
+    this.formData.get('endereco')?.patchValue(data);
   }
 
   complete() {
-    this.paymentComplete.next(this.clienteInformation.personalInformation);
+    console.log(this.formData)
+    if (this.formData.valid) {
+      this.paymentComplete.next(this.formData.value);
+    } else {
+      console.error('O formulário não está completo ou contém erros.');
+    }
   }
-
-  constructor(public http: HttpClient){ }
-
   post() {
+    if (!this.formData) {
+      console.error('O formulário do cliente não foi definido.');
+      return;
+    }
+
     const url = 'https://localhost:44352/api/Cliente/Inserir';
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    // Montando o objeto conforme o JSON fornecido
+    const clienteData = this.formData.value;
+
     const requestBody = {
-      nome: this.clienteInformation.personalInformation.primeiroNome + ' ' + this.clienteInformation.personalInformation.sobrenome,
-      email: this.clienteInformation.personalInformation.email,
-      numeroTelefone: this.clienteInformation.personalInformation.numeroTelefone,
+      nome: `${clienteData.primeiroNome} ${clienteData.sobrenome}`,
+      email: clienteData.email,
+      numeroTelefone: clienteData.numeroTelefone,
+      cpf: clienteData.cpf,
+      dtNascimento: clienteData.dtNascimento, 
+      tipoTelefone: clienteData.tipoTelefone, 
+      telefone: clienteData.telefone, 
+      senha: clienteData.senha,
       endereco: {
-        numero: '', // Você precisa preencher este campo
-        logradouro: this.clienteInformation.enderecoInformation.logradouro,
-        cep: this.clienteInformation.enderecoInformation.cep,
-        bairro: this.clienteInformation.enderecoInformation.bairro,
-        cidade: {
-          nome: this.clienteInformation.enderecoInformation.cidade,
-          estado: {
-            nome: this.clienteInformation.enderecoInformation.estado,
-            sigla: this.clienteInformation.enderecoInformation.sigla
-          }
-        }
+        cep: clienteData.cep,
+        logradouro: clienteData.logradouro,
+        bairro: clienteData.bairro,
+        numero: clienteData.numero,
+        cidade: clienteData.cidade,
+        estado: clienteData.estado,
+        sigla: clienteData.sigla
       }
     };
-
-    // Enviando a solicitação POST
+    
     this.http.post(url, requestBody, { headers }).subscribe(
       (response: any) => {
         console.log('Sucesso:', response);

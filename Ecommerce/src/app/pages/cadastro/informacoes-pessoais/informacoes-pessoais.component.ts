@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CadastroService } from '../cadastro.service';
 import { Router } from '@angular/router';
-import { FormGroup } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-informacoes-pessoais',
@@ -9,29 +9,32 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./informacoes-pessoais.component.scss']
 })
 export class InformacoesPessoaisComponent implements OnInit {
-  personalInformation: any;
+  @ViewChild('informacaoPessoal') informacaoPessoalForm!: NgForm;
   submitted: boolean = false;
 
-  constructor(public cadastroService: CadastroService, private router: Router) {
-    this.ngOnInit();
-  }
+  constructor(public cadastroService: CadastroService, private router: Router) { }
+
+  generos: any[] = [
+    { genero: 'Masculino' },
+    { genero: 'Feminino' },
+    { genero: 'Não informar' },
+  ];
+
+  tiposTelefone: any[] = [
+    { tipo: 'Celular' },
+    { tipo: 'Residencial' },
+  ];
 
   ngOnInit(): void {
-    this.personalInformation = this.cadastroService.getClienteInformation().personalInformation;
   }
 
   nextPage() {
-    if (this.personalInformation.primeiroNome &&
-      this.personalInformation.sobrenome &&
-      this.personalInformation.email &&
-      this.personalInformation.numeroTelefone) {
-      this.cadastroService.clienteInformation.personalInformation = this.personalInformation;
-      this.router.navigate(['/formulario/endereco']);
-
-      return;
+    if (this.informacaoPessoalForm.valid) {
+      const clienteData = this.informacaoPessoalForm.value;
+      console.log(clienteData)
+      this.cadastroService.setClienteData(clienteData); // Envie os dados para o serviço
+      this.router.navigate(['/cadastro/endereco']);
     }
-
     this.submitted = true;
   }
-
 }

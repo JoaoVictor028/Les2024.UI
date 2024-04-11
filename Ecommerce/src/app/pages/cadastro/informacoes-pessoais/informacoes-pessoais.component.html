@@ -1,69 +1,149 @@
 <div class="stepsdemo-content">
     <p-card>
-        <ng-template pTemplate="title"> Informação Pessoal</ng-template>
-        <ng-template pTemplate="subtitle"> Insira suas informações pessoais. </ng-template>
+        <ng-template pTemplate="title">Informação Pessoal</ng-template>
+        <ng-template pTemplate="subtitle">Insira suas informações pessoais.</ng-template>
         <ng-template pTemplate="content">
-            <div class="p-fluid">
-                <div class="field">
-                    <label for="primeiroNome">Primeiro Nome</label>
-                    <input
-                        #primeiroNome="ngModel"
-                        id="primeiroNome"
-                        type="text"
-                        required
-                        pInputText
-                        [(ngModel)]="personalInformation.primeiroNome"
-                        [ngClass]="{ 'ng-dirty': (primeiroNome.invalid && submitted) || (primeiroNome.dirty && primeiroNome.invalid) }"
-                    />
-                    <small 
-                        *ngIf="(primeiroNome.invalid && submitted) || (primeiroNome.dirty && primeiroNome.invalid)" 
-                        class="p-error">Primeiro nome é necessario.
-                    </small>
+            <form #informacaoPessoal="ngForm" (ngSubmit)="nextPage()">
+                <div class="p-fluid formgrid grid">
+                    <div class="field col-12 md:col-2">
+                        <label for="genero">Gênero</label>
+                        <p-dropdown
+                            [options]="generos"
+                            optionLabel="genero"
+                            name="genero" 
+                            id="genero"
+                            ngModel 
+                            #genero="ngModel"
+                        />
+                        <small *ngIf="(genero?.invalid && submitted ) || (genero?.dirty && genero?.invalid)" 
+                            class="p-error">Gênero é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-5">
+                        <label for="primeiroNome">Primeiro Nome</label>
+                        <input 
+                            name="primeiroNome" 
+                            id="primeiroNome"
+                            pInputText
+                            ngModel 
+                            required 
+                            minlength="2"
+                            #primeiroNome="ngModel"
+                        />
+                        <small *ngIf="(primeiroNome?.invalid && submitted) || (primeiroNome?.dirty && primeiroNome?.invalid)" 
+                            class="p-error">Primeiro nome é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-5">
+                        <label for="sobrenome">Sobrenome</label>
+                        <input 
+                            name="sobrenome" 
+                            id="sobrenome"
+                            pInputText
+                            ngModel 
+                            required 
+                            minlength="2"
+                            #sobrenome="ngModel"
+                        />
+                        <small *ngIf="(sobrenome?.invalid && submitted) || (sobrenome?.dirty && sobrenome?.invalid)" 
+                            class="p-error">Sobrenome é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-3">
+                        <label for="dtNascimento">Data de Nascimento</label>
+                        <p-calendar 
+                            name="dtNascimento" 
+                            id="dtNascimento"
+                            ngModel
+                            dateFormat="dd/mm/yy"
+                            #dtNascimento="ngModel"
+                        />
+                        <small *ngIf="(dtNascimento?.invalid && submitted) || (dtNascimento?.dirty && dtNascimento?.invalid)" 
+                            class="p-error">dtNascimento é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-5">
+                        <label for="cpf">cpf</label>
+                        <input 
+                            name="cpf" 
+                            id="cpf"
+                            pInputText
+                            ngModel 
+                            required 
+                            minlength="2"
+                            #cpf="ngModel"
+                        />
+                        <small *ngIf="(cpf?.invalid && submitted) || (cpf?.dirty && cpf?.invalid)" 
+                            class="p-error">cpf é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <label for="tipoTelefone">tipo do telefone</label>
+                        <p-dropdown
+                            [options]="tiposTelefone"
+                            optionLabel="tipo"
+                            name="tipoTelefone" 
+                            id="tipoTelefone"
+                            ngModel 
+                            minlength="2"
+                            #tipoTelefone="ngModel"
+                        />
+                        <small *ngIf="(tipoTelefone?.invalid && submitted) || (tipoTelefone?.dirty && tipoTelefone?.invalid)" 
+                            class="p-error">tipo é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <label for="telefone">telefone</label>
+                        <input 
+                            name="telefone" 
+                            id="telefone"
+                            pInputText
+                            ngModel 
+                            required 
+                            minlength="2"
+                            #telefone="ngModel"
+                        />
+                        <small *ngIf="(telefone?.invalid && submitted) || (telefone?.dirty && telefone?.invalid)" 
+                            class="p-error">telefone é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-12">
+                        <label for="email">email</label>
+                        <input 
+                            name="email" 
+                            id="email"
+                            pInputText
+                            ngModel 
+                            required 
+                            minlength="2"
+                            #email="ngModel"
+                        />
+                        <small *ngIf="(email?.invalid && submitted) || (email?.dirty && email?.invalid)" 
+                            class="p-error">email é necessário.
+                        </small>
+                    </div>
+                    <div class="field col-12 md:col-12">
+                        <label for="senha">senha</label>
+                        <p-password
+                            [toggleMask]="true"
+                            [feedback]="false"
+                            name="senha" 
+                            id="senha"
+                            ngModel 
+                            required 
+                            minlength="2"
+                            #senha="ngModel"
+                        />
+                        <small *ngIf="(senha?.invalid && submitted) || (senha?.dirty && senha?.invalid)" 
+                            class="p-error">senha é necessário.
+                        </small>
+                    </div>
+
                 </div>
-                <div class="field">
-                    <label for="sobrenome">Sobrenome</label>
-                    <input #sobrenome="ngModel" 
-                        id="sobrenome" 
-                        type="text" 
-                        required 
-                        pInputText 
-                        [(ngModel)]="personalInformation.sobrenome" 
-                        [ngClass]="{ 'ng-dirty': (sobrenome.invalid && submitted) || (sobrenome.dirty && sobrenome.invalid) }" />
-                    <small class="p-error" 
-                        *ngIf="(sobrenome.invalid && submitted) || (sobrenome.dirty && sobrenome.invalid)">sobrenome é necessario.
-                    </small>
-                </div>
-                <div class="field">
-                    <label for="email">Email</label>
-                    <input #email="ngModel" 
-                        id="email" type="text" 
-                        required 
-                        pInputText 
-                        [(ngModel)]="personalInformation.email" 
-                        [ngClass]="{ 'ng-dirty': (email.invalid && submitted) || (email.dirty && email.invalid) }" />
-                    <small class="p-error" 
-                        *ngIf="(email.invalid && submitted) || (email.dirty && email.invalid)">Email é necessario.
-                    </small>
-                </div>
-                <div class="field">
-                    <label for="numeroTelefone">Número de Telefone</label>
-                    <input #numeroTelefone="ngModel" 
-                        id="numeroTelefone" 
-                        type="text" 
-                        required 
-                        pInputText 
-                        [(ngModel)]="personalInformation.numeroTelefone" 
-                        [ngClass]="{ 'ng-dirty': (numeroTelefone.invalid && submitted) || (numeroTelefone.dirty && numeroTelefone.invalid) }" />
-                    <small class="p-error" 
-                        *ngIf="(numeroTelefone.invalid && submitted) || (numeroTelefone.dirty && numeroTelefone.invalid)">Número de telefone é necessario.
-                    </small>
-                </div>
-            </div>
-        </ng-template>
-        <ng-template pTemplate="footer">
-            <div class="grid grid-nogutter justify-content-end">
-                <p-button label="Next" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
-            </div>
+                    <div class="grid grid-nogutter justify-content-end">
+                        <button type="submit" pButton label="Avançar" icon="pi pi-angle-right" iconPos="right"></button>
+                    </div>
+                </form>
         </ng-template>
     </p-card>
 </div>
